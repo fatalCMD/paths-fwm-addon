@@ -17,11 +17,11 @@ BEGIN
 	BEGIN
 		BLOCK "040904b0"
 		BEGIN
-			VALUE "FileDescription", "Paths - Follower Ability Skilltree"
+			VALUE "FileDescription", "Path of the Companions"
 			VALUE "FileVersion", "@FWMP_VERSION@.0"
 			VALUE "InternalName", "FightWithMePaths"
 			VALUE "LegalCopyright", "GPL-3.0-or-later"
-			VALUE "ProductName", "Paths - Follower Ability Skilltree"
+			VALUE "ProductName", "Path of the Companions"
 			VALUE "ProductVersion", "@FWMP_VERSION@.0"
 		END
 	END

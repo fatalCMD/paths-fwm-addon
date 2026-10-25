@@ -1,11 +1,34 @@
-// Paths - Follower Ability Skilltree: a perk tree for each follower role in Fight With Me.
+// Path of the Companions: a perk tree for each follower role.
 //
-// Keeps every companion's perk points, ranks and carried abilities, and saves them in the
-// co-save. Fight With Me draws the trees in its battle plan and carries the abilities out;
-// this plugin is the record of what each companion has learned, and the rules for learning
-// more. Without Fight With Me it does nothing.
+// Keeps every companion's perk points, ranks and carried abilities, and runs the abilities, the
+// unique traits, the levels earned by fighting and the path bonuses, with a panel of its own to
+// open the trees from. With Fight With Me installed, it gives each companion their role (so the
+// path that counts) and steers the fight: what the abilities need of it is handed over through
+// the interface. Without it, the same code steers for the abilities itself.
 
+#include "FWM/Battle.h"
+#include "FWM/Camera.h"
+#include "FWM/Game.h"
+#include "FWM/Effects.h"
+#include "FWM/Forms.h"
+#include "FWM/Freeze.h"
+#include "FWM/Ripostes.h"
+#include "FWM/Host.h"
+#include "FWM/Log.h"
+#include "FWM/LoadoutPolicy.h"
+#include "FWM/Menu.h"
+#include "FWM/OrdersLink.h"
+#include "FWM/Overrides.h"
+#include "FWM/PathBonus.h"
 #include "FWM/Paths.h"
+#include "FWM/PathsLink.h"
+#include "FWM/Save.h"
+#include "FWM/Settings.h"
+#include "FWM/Text.h"
+#include "FWM/TimeBend.h"
+#include "FWM/Traits.h"
+#include "FWM/WalkWithMe.h"
+#include "FWM/WindstepDecoys.h"
 
 #include "FightWithMePathsAPI.h"
 
@@ -18,44 +41,11 @@ namespace
 	constexpr auto kName = "FightWithMePaths"sv;
 	constexpr REL::Version kVersion{ FWMP_VERSION_MAJOR, FWMP_VERSION_MINOR, FWMP_VERSION_PATCH };
 
-	// --- Log ----------------------------------------------------------------------------
-
-	std::mutex    logLock;
-	std::ofstream logFile;
-
-	void OpenLog()
-	{
-		try {
-			const auto directory = SKSE::log::log_directory();
-			if (!directory) {
-				return;
-			}
-			std::error_code ec;
-			std::filesystem::create_directories(*directory, ec);
-			const auto current = *directory / L"FightWithMePaths.log";
-			if (std::filesystem::exists(current, ec)) {
-				std::filesystem::rename(current, *directory / L"FightWithMePaths.previous.log", ec);
-			}
-			logFile.open(current, std::ios::out | std::ios::trunc);
-		} catch (...) {
-		}
-	}
-
 	template <class... Args>
 	void Log(std::format_string<Args...> a_fmt, Args&&... a_args)
 	{
-		const std::scoped_lock guard(logLock);
-		if (!logFile.is_open()) {
-			return;
-		}
-		SYSTEMTIME now{};
-		::GetLocalTime(&now);
-		logFile << std::format("[{:02}:{:02}:{:02}.{:03}] ", now.wHour, now.wMinute, now.wSecond, now.wMilliseconds)
-				<< std::format(a_fmt, std::forward<Args>(a_args)...) << '\n';
-		logFile.flush();
+		FWM::Log::Info(a_fmt, std::forward<Args>(a_args)...);
 	}
-
-	// --- Settings -----------------------------------------------------------------------
 
 	// --- Records ------------------------------------------------------------------------
 
@@ -63,16 +53,84 @@ namespace
 	std::mutex  storeLock;
 	Paths::Book book;
 
-	void LoadSettings()
+	// --- Settings -----------------------------------------------------------------------
+
+	std::filesystem::path PluginFolder()
 	{
 		std::error_code ec;
-		const auto      path = (std::filesystem::current_path(ec) / L"Data" / L"SKSE" / L"Plugins" / L"FightWithMePaths.ini").wstring();
-		auto&           points = book.points;
-		points.above = std::clamp(static_cast<int>(::GetPrivateProfileIntW(L"Points", L"iPointsAboveLevel", 10, path.c_str())), 0, 100);
-		points.extra = std::clamp(static_cast<int>(::GetPrivateProfileIntW(L"Points", L"iBonusPoints", 0, path.c_str())), 0, 100);
-		points.respec = ::GetPrivateProfileIntW(L"Points", L"bAllowRespec", 1, path.c_str()) != 0;
-		points.unlimited = ::GetPrivateProfileIntW(L"Points", L"bAllowUnlimitedPoints", 1, path.c_str()) != 0;
+		return std::filesystem::current_path(ec) / L"Data" / L"SKSE" / L"Plugins";
+	}
+
+	// The shipped file, then what was changed in game, which no update replaces.
+	std::wstring IniPath() { return (PluginFolder() / L"FightWithMePaths.ini").wstring(); }
+	std::wstring UserIniPath() { return (PluginFolder() / L"FightWithMePaths_user.ini").wstring(); }
+
+	int ReadInt(const wchar_t* a_key, int a_default)
+	{
+		const int shipped = static_cast<int>(::GetPrivateProfileIntW(L"Points", a_key, a_default, IniPath().c_str()));
+		return static_cast<int>(::GetPrivateProfileIntW(L"Points", a_key, shipped, UserIniPath().c_str()));
+	}
+
+	void LoadSettings()
+	{
+		auto& points = book.points;
+		points.above = std::clamp(ReadInt(L"iPointsAboveLevel", 10), 0, 100);
+		points.extra = std::clamp(ReadInt(L"iBonusPoints", 0), 0, 100);
+		points.respec = ReadInt(L"bAllowRespec", 1) != 0;
+		points.unlimited = ReadInt(L"bAllowUnlimitedPoints", 1) != 0;
 		Log("Settings: a point for every level past {}, {} bonus point(s), giving points back {}.", points.above, points.extra, points.respec ? "allowed" : "off");
+	}
+
+	FWM::Menu::PathsRules ReadRules()
+	{
+		const std::scoped_lock guard(storeLock);
+		const auto&            points = book.points;
+		return { points.above, points.extra, points.respec, points.unlimited };
+	}
+
+	// Into use at once, and into the user file: only what differs from the shipped one, a key at a
+	// time, the way Fight With Me keeps its own.
+	bool WriteRules(const FWM::Menu::PathsRules& a_rules)
+	{
+		{
+			const std::scoped_lock guard(storeLock);
+			auto&                  points = book.points;
+			points.above = std::clamp(a_rules.above, 0, 100);
+			points.extra = std::clamp(a_rules.extra, 0, 100);
+			points.respec = a_rules.respec;
+			points.unlimited = a_rules.unlimited;
+		}
+		const auto      user = UserIniPath();
+		std::error_code ec;
+		if (!std::filesystem::exists(user, ec)) {
+			std::ofstream out(std::filesystem::path(user), std::ios::binary);
+			out << "; Path of the Companions: the settings you changed in game, read after\r\n"
+				   "; FightWithMePaths.ini. Updates never replace this file. Delete a line, or the whole\r\n"
+				   "; file, to go back to what FightWithMePaths.ini says.\r\n\r\n";
+			if (!out) {
+				Log("Could not create FightWithMePaths_user.ini.");
+				return false;
+			}
+		}
+		const std::array<std::pair<const wchar_t*, int>, 4> keys{ {
+			{ L"iPointsAboveLevel", a_rules.above },
+			{ L"iBonusPoints", a_rules.extra },
+			{ L"bAllowRespec", a_rules.respec ? 1 : 0 },
+			{ L"bAllowUnlimitedPoints", a_rules.unlimited ? 1 : 0 },
+		} };
+		const std::array<int, 4> shipped{ static_cast<int>(::GetPrivateProfileIntW(L"Points", L"iPointsAboveLevel", 10, IniPath().c_str())),
+			static_cast<int>(::GetPrivateProfileIntW(L"Points", L"iBonusPoints", 0, IniPath().c_str())),
+			static_cast<int>(::GetPrivateProfileIntW(L"Points", L"bAllowRespec", 1, IniPath().c_str())) != 0 ? 1 : 0,
+			static_cast<int>(::GetPrivateProfileIntW(L"Points", L"bAllowUnlimitedPoints", 1, IniPath().c_str())) != 0 ? 1 : 0 };
+		bool ok = true;
+		for (std::size_t i = 0; i < keys.size(); ++i) {
+			const auto value = std::to_wstring(keys[i].second);
+			const bool mine = keys[i].second != shipped[i];
+			ok = ::WritePrivateProfileStringW(L"Points", keys[i].first, mine ? value.c_str() : nullptr, user.c_str()) && ok;
+		}
+		Log("Settings changed: a point for every level past {}, {} bonus point(s), giving points back {}, unlimited points {}{}.", a_rules.above, a_rules.extra,
+			a_rules.respec ? "allowed" : "off", a_rules.unlimited ? "offered" : "not offered", ok ? "" : "; FightWithMePaths_user.ini could not be written");
+		return ok;
 	}
 
 	std::string NameOf(RE::FormID a_id)
@@ -162,6 +220,7 @@ namespace
 				return static_cast<int>(Paths::Block::kBadNode);
 			}
 			const auto role = static_cast<Role>(a_role);
+			if(role==Role::kBruiser && !FWM::Game::ArsenalOf(RE::TESForm::LookupByID<RE::Actor>(a_actor)).twoHanded) return static_cast<int>(Paths::Block::kBadNode);
 			const auto block = book.Learn(a_actor, role, a_node);
 			if (block == Paths::Block::kNone) {
 				Log("{} learns {} (rank {}, {} of {} point(s) spent).", NameOf(a_actor), NodeName(role, a_node), record->ranks[a_role][a_node],
@@ -281,9 +340,72 @@ namespace
 			}
 			return static_cast<int>(block);
 		}
+
+		std::uint32_t Steering(FightWithMePathsAPI::Steer* a_out, std::uint32_t a_capacity) override
+		{
+			if (!a_out) {
+				return 0;
+			}
+			std::uint32_t written = 0;
+			for (const auto& steer : FWM::Battle::Steering()) {
+				if (written >= a_capacity) {
+					break;
+				}
+				auto& out = a_out[written++];
+				out = {};
+				out.actor = steer.member;
+				out.target = steer.target.native_handle();
+				out.circle = steer.circle.native_handle();
+				out.radius = steer.radius;
+				out.bash = steer.tweaks.bash;
+				out.power = steer.tweaks.power;
+				out.flank = steer.tweaks.flank;
+				out.circling = steer.tweaks.circle;
+				out.fallback = steer.tweaks.fallback;
+				out.strafe = steer.tweaks.strafe;
+				out.avoidThreat = steer.tweaks.avoidThreat;
+				out.offensive = steer.tweaks.offensive;
+				out.defensive = steer.tweaks.defensive;
+			}
+			return written;
+		}
+
+		std::uint32_t Holds(FightWithMePathsAPI::Hold* a_out, std::uint32_t a_capacity) override
+		{
+			if (!a_out) {
+				return 0;
+			}
+			std::uint32_t written = 0;
+			for (const auto& [enemy, tank] : FWM::Battle::Holds()) {
+				if (written >= a_capacity) {
+					break;
+				}
+				a_out[written++] = { enemy.native_handle(), tank.native_handle() };
+			}
+			return written;
+		}
+
+		void Adopt(void* a_serialization, std::uint32_t a_type, std::uint32_t a_version, const std::uint8_t* a_data, std::uint32_t a_size) override
+		{
+			auto* intfc = static_cast<SKSE::SerializationInterface*>(a_serialization);
+			if (!intfc || (!a_data && a_size)) {
+				return;
+			}
+			FWM::Save::Adopt(intfc, a_type, a_version, std::vector<std::uint8_t>(a_data, a_data + a_size));
+		}
+
+		void DrawInPlan(FightWithMePathsAPI::Plan* a_plan) override
+		{
+			if (a_plan) {
+				FWM::Menu::DrawInPlan(*a_plan);
+			}
+		}
 	} api;
 
 	// --- Co-save ------------------------------------------------------------------------
+	// The paths, and everything the abilities keep between saves (their lifts, their cooldowns,
+	// the levels earned by fighting, each companion's switches), in the records Fight With Me once
+	// wrote into its own co-save. On its own, also each companion's path and what they may hold.
 
 	constexpr std::uint32_t kUniqueID = 'FWMP';
 	constexpr std::uint32_t kRecordType = 'PATH';
@@ -311,6 +433,7 @@ namespace
 			Log("Could not write the records kept aside for {} companion(s) with unlimited points.", kept.size());
 		}
 		Log("Paths of {} companion(s) saved{}.", entries.size(), kept.empty() ? ""s : std::format(", {} with unlimited points", kept.size()));
+		FWM::Save::Write(a_intfc);
 	}
 
 	// Both records are read before anything is set right: a companion with unlimited points keeps
@@ -327,8 +450,13 @@ namespace
 			}
 			if (type == kRecordType) {
 				loaded = Paths::Decode(bytes, version);
+				if (version < 3 && !loaded.empty()) {
+					Log("Progression update: reset {} companion paths and refunded all earned points; trait ranks now require levels 25/50.", loaded.size());
+				}
 			} else if (type == kBeforeType) {
 				kept = Paths::Decode(bytes, version);
+			} else {
+				FWM::Save::Read(a_intfc, type, version, bytes);
 			}
 		}
 		auto resolve = [&](RE::FormID a_id) {
@@ -354,17 +482,111 @@ namespace
 
 	void OnRevert(SKSE::SerializationInterface*)
 	{
-		const std::scoped_lock guard(storeLock);
-		book.Clear();
+		{
+			const std::scoped_lock guard(storeLock);
+			book.Clear();
+		}
+		FWM::Save::Revert();
+	}
+
+	// --- On its own ---------------------------------------------------------------------
+
+	struct PlayerUpdate
+	{
+		static void Thunk(RE::PlayerCharacter* a_player, float a_delta)
+		{
+			original(a_player, a_delta);
+			FWM::Battle::Update(a_delta);
+		}
+
+		static void Install()
+		{
+			REL::Relocation<std::uintptr_t> vtable{ RE::PlayerCharacter::VTABLE[0] };
+			original = vtable.write_vfunc(0xAD, Thunk);
+			Log("[Hook] Player update installed.");
+		}
+
+		static inline REL::Relocation<decltype(Thunk)> original;
+	};
+
+	// The words in the player's language, from the folder Fight With Me reads them from too.
+	void LoadText()
+	{
+		std::string language = FWM::Settings::Get().language;
+		if (language.empty()) {
+			if (auto* setting = RE::GetINISetting("sLanguage:General"); setting && setting->GetType() == RE::Setting::Type::kString && setting->GetString()) {
+				language = setting->GetString();
+			}
+		}
+		language = FWM::Text::Upper(language.empty() ? "ENGLISH"sv : std::string_view(language));
+		std::error_code ec;
+		const auto      folder = std::filesystem::current_path(ec) / L"Data" / L"SKSE" / L"Plugins" / L"FightWithMe" / L"Translations";
+		const auto      loaded = FWM::Text::Load(folder, language);
+		if (loaded.files.empty()) {
+			Log("[Text] {}: no translation files, so English.", language);
+			return;
+		}
+		Log("[Text] {}: {} lines from {} file(s).", language, loaded.entries, loaded.files.size());
 	}
 
 	void OnMessage(SKSE::MessagingInterface::Message* a_message)
 	{
-		if (a_message && a_message->type == SKSE::MessagingInterface::kDataLoaded) {
-			const bool fightWithMe = ::GetModuleHandleW(L"FightWithMe.dll") != nullptr;
-			Log("Data loaded; Fight With Me {}.", fightWithMe ? "is here" : "is NOT loaded, so nothing will use these paths");
+		if (!a_message) {
+			return;
+		}
+		switch (a_message->type) {
+		case SKSE::MessagingInterface::kPostLoad:
+			if (::GetModuleHandleW(L"FightWithMe.dll")) {
+				Log("Fight With Me is here: it gives each companion their role and steers the fight; this runs the abilities, traits and levels.");
+				FWM::OrdersLink::Connect();
+			} else {
+				FWM::Host::SetPathsAlone();
+				Log("Fight With Me is not installed: Path of the Companions also steers the fight for its abilities.");
+				FWM::WalkWithMe::Connect();
+			}
+			FWM::Settings::Load();
+			FWM::PathsLink::Connect();
+			FWM::Camera::RegisterSmoothCam();
+			break;
+		case SKSE::MessagingInterface::kDataLoaded:
+			LoadText();
+			FWM::Forms::Resolve();
+			FWM::Traits::LoadNotes();
+			FWM::Effects::Install();
+			// Beside Fight With Me, its hook steers and its pause menu is already registered.
+			if (FWM::Host::PathsAlone()) {
+				FWM::TimeBend::Register();
+				FWM::Overrides::Install();
+			}
+			FWM::PathBonus::Install();
+			PlayerUpdate::Install();
+			// This DLL owns the perk menu and its camera state, including when paired.
+			FWM::Camera::Install();
+			FWM::Camera::RequestSmoothCam();
+			FWM::Freeze::Install();
+            FWM::Ripostes::Install();
+			FWM::Battle::InstallEvents();
+			FWM::Menu::RegisterPaths({ ReadRules, WriteRules });
+			break;
+		case SKSE::MessagingInterface::kNewGame:
+		case SKSE::MessagingInterface::kPreLoadGame:
+			FWM::Battle::Reset();
+			break;
+		default:
+			break;
 		}
 	}
+}
+
+extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_IsWindstepDecoy(std::uint32_t actor)
+{
+    return FWM::WindstepDecoys::Is(actor);
+}
+
+extern "C" FIGHTWITHMEPATHS_API std::uint32_t FightWithMePaths_GetLoadoutMask(std::uint32_t role)
+{
+    return role < static_cast<std::uint32_t>(FWM::Role::kCount) ?
+        FWM::LoadoutPolicy::RoleWeapons(static_cast<FWM::Role>(role)) : 0;
 }
 
 extern "C" FIGHTWITHMEPATHS_API FightWithMePathsAPI::IPaths* FightWithMePaths_GetInterface(std::uint32_t a_version)
@@ -374,8 +596,8 @@ extern "C" FIGHTWITHMEPATHS_API FightWithMePathsAPI::IPaths* FightWithMePaths_Ge
 
 EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Load(const SKSE::LoadInterface* a_skse)
 {
-	OpenLog();
-	Log("Paths - Follower Ability Skilltree {} loading; trees {:08X}.", kVersion.string("."sv), Paths::Signature());
+	FWM::Log::Setup(L"FightWithMePaths");
+	Log("Path of the Companions {} loading; trees {:08X}.", kVersion.string("."sv), Paths::Signature());
 	SKSE::Init(a_skse, false);
 	if (REL::Module::IsVR()) {
 		Log("Skyrim VR is not supported.");

@@ -1,0 +1,301 @@
+﻿# English<TAB>Translation, one entry a line. Translate the right side only, keeping every {} (a value
+# filled in as the game runs; {0}, {1} put them in another order) and \n (a new line). Leave a right
+# side empty to keep the English. Save as UTF-8 and name the copy after the game's language, e.g.
+# <Mod>_FRENCH.txt, beside this one in Data/SKSE/Plugins/FightWithMe/Translations.
+# For Cyrillic, Chinese, Japanese, Korean or Thai, switch the matching Enable... on under [Fonts]
+# in SKSEMenuFramework.ini, so the menus have the letters.
+
+# include/FWM/Paths.h
+Taunt	Taunt
+When nearby enemies pressure an ally who needs protection.	When nearby enemies pressure an ally who needs protection.
+Weak Will	Weak Will
+When several enemies attack them, or they are hurt under pressure.	When several enemies attack them, or they are hurt under pressure.
+Chaos Down	Chaos Down
+When two or more enemies are close around them.	When two or more enemies are close around them.
+Last Bastion	Last Bastion
+When a nearby living ally falls below 25% health in combat.	When a nearby living ally falls below 25% health in combat.
+Healing Circle	Healing Circle
+When anyone is down or drops below the line.	When anyone is down or drops below the line.
+Rejuvenate	Rejuvenate
+When a nearby caster is nearly out of magicka during a pressured fight.	When a nearby caster is nearly out of magicka during a pressured fight.
+Azura's Moon	Azura's Moon
+When the party is under heavy attack or a wounded ally needs protection.	When the party is under heavy attack or a wounded ally needs protection.
+Renewal	Renewal
+When two or more of the party are below 70% health.	When two or more of the party are below 70% health.
+War cry	War cry
+When three or more enemies close in on them, or two when they are hurt.	When three or more enemies close in on them, or two when they are hurt.
+Berserk	Berserk
+When healthy enough to commit against a durable opponent or several close enemies.	When healthy enough to commit against a durable opponent or several close enemies.
+Sunder	Sunder
+Against a healthy boss or stronger enemy within melee reach.	Against a healthy boss or stronger enemy within melee reach.
+Earthshaker	Earthshaker
+When three or more enemies are close around them.	When three or more enemies are close around them.
+Disarm	Disarm
+Against a dangerous nearby weapon user, especially when hurt.	Against a dangerous nearby weapon user, especially when hurt.
+Second Wind	Second Wind
+When their health falls below 35%.	When their health falls below 35%.
+Riposte	Riposte
+When surrounded in melee, or hurt while facing a boss.	When surrounded in melee, or hurt while facing a boss.
+Kynareth's Maw	Kynareth's Maw
+When close in front of a durable opponent or a group, saving it on dying enemies.	When close in front of a durable opponent or a group, saving it on dying enemies.
+Volley	Volley
+Against a nearby boss or stronger enemy with enough health to justify the arrows.	Against a nearby boss or stronger enemy with enough health to justify the arrows.
+Explosive Arrow	Explosive Arrow
+When enemies cluster around the target, or against a durable opponent.	When enemies cluster around the target, or against a durable opponent.
+Windstep	Windstep
+When enemies crowd the archer; retreats into clear space.	When enemies crowd the archer; retreats into clear space.
+Arrow Rain	Arrow Rain
+When three or more enemies are bunched together.	When three or more enemies are bunched together.
+Arcane Surge	Arcane Surge
+When their magicka runs low in a fight.	When their magicka runs low in a fight.
+Elemental Burst	Elemental Burst
+Against a nearby cluster or durable enemy, with time between party abilities.	Against a nearby cluster or durable enemy, with time between party abilities.
+Magnus	Magnus
+When magicka is low against a nearby boss or several enemies.	When magicka is low against a nearby boss or several enemies.
+Dragon's Breath	Dragon's Breath
+Against a durable enemy or nearby cluster in front, with room for the stream.	Against a durable enemy or nearby cluster in front, with room for the stream.
+Expose	Expose
+Sweep	Sweep
+Resolve	Resolve
+Unyielding	Unyielding
+Counter	Counter
+Disarming Parry	Disarming Parry
+Maul	Maul
+Hemorrhage	Hemorrhage
+Flanker	Flanker
+Endurance	Endurance
+Opportunist	Opportunist
+Brace	Brace
+Intimidate	Intimidate
+Lingering Dread	Lingering Dread
+Unyielding Will	Unyielding Will
+Widening Chaos	Widening Chaos
+Lingering Chaos	Lingering Chaos
+Sheltering Reach	Sheltering Reach
+Hold the Line	Hold the Line
+Iron Hide	Iron Hide
+Shield Master	Shield Master
+Last Stand	Last Stand
+Invigorate	Invigorate
+Wide Circle	Wide Circle
+Deep Roots	Deep Roots
+Lifeline	Lifeline
+Wellspring	Wellspring
+Vigor	Vigor
+Moon's Reach	Moon's Reach
+Lingering Grace	Lingering Grace
+Triage	Triage
+Serenity	Serenity
+Guardian Spirit	Guardian Spirit
+Rallying Roar	Rallying Roar
+Unnerve	Unnerve
+Bloodlust	Bloodlust
+Thick Skull	Thick Skull
+Crack	Crack
+Shatter	Shatter
+Aftershock	Aftershock
+Fault Line	Fault Line
+Heavy Hands	Heavy Hands
+Momentum	Momentum
+Executioner	Executioner
+Rally Fire	Rally Fire
+Broadhead	Broadhead
+Blast Radius	Blast Radius
+High Explosive	High Explosive
+Tailwind	Tailwind
+Fleet Footed	Fleet Footed
+Downpour	Downpour
+Pinning Rain	Pinning Rain
+Steady Breath	Steady Breath
+Fine Arrows	Fine Arrows
+Spell-Touched	Spell-Touched
+Overflow	Overflow
+Conduit	Conduit
+Searing	Searing
+Twin Cast	Twin Cast
+Dragon's Reach	Dragon's Reach
+Lingering Breath	Lingering Breath
+Arcane Flow	Arcane Flow
+Spell Shield	Spell Shield
+Unravel	Unravel
+Path of the Blade	Path of the Blade
+Steel and nerve: take their weapons, turn their blows, loose the wolf spirit.	Steel and nerve: take their weapons, turn their blows, loose the wolf spirit.
+Path of the Shield	Path of the Shield
+Hold the line: draw every eye, stand between you and harm, steel the party.	Hold the line: draw every eye, stand between you and harm, steel the party.
+Path of the Mender	Path of the Mender
+Keep everyone standing: a circle of healing light, quickened magicka, wards and slow renewal.	Keep everyone standing: a circle of healing light, quickened magicka, wards and slow renewal.
+Path of the Hammer	Path of the Hammer
+Break them: roars that stagger, fury, shattered guards and a shaking earth.	Break them: roars that stagger, fury, shattered guards and a shaking earth.
+Path of the Arrow	Path of the Arrow
+Death from range: volleys, explosive arrows, windsteps and a rain of arrows.	Death from range: volleys, explosive arrows, windsteps and a rain of arrows.
+Path of the Storm	Path of the Storm
+Spell pressure: surging magicka, wards, elemental bursts, and at its height, Magnus.	Spell pressure: surging magicka, wards, elemental bursts, and at its height, Magnus.
+
+# src/Paths.cpp
+Novice	Novice
+Apprentice	Apprentice
+Adept	Adept
+Expert	Expert
+Requires {} Rank {}	Requires {} Rank {}
+Requires level {}	Requires level {}
+Maximum rank reached	Maximum rank reached
+Not enough perk points	Not enough perk points
+Follower level too low	Follower level too low
+Requires the matching ability rank	Requires the matching ability rank
+Rank 1 cannot be removed	Rank 1 cannot be removed
+Refund dependent perks first	Refund dependent perks first
+Ability not unlocked	Ability not unlocked
+No ranks to refund	No ranks to refund
+Invalid perk	Invalid perk
+Requires all other perks unlocked	Requires all other perks unlocked
+Requires all perks at maximum rank	Requires all perks at maximum rank
+Maximum path bonus reached	Maximum path bonus reached
++{} armor	+{} armor
+{} damage	{} damage
++{} m	+{} m
+-{} armor	-{} armor
+-{}% damage	-{}% damage
+{}% health a second	{}% health a second
+{}% stamina a second	{}% stamina a second
++{} wide	+{} wide
+-{}% movement and attack speed	-{}% movement and attack speed
+{}% health	{}% health
+{}% magicka	{}% magicka
+{}% stamina	{}% stamina
+{:.1f}% stamina/s	{:.1f}% stamina/s
++{}% stamina	+{}% stamina
++{}% magicka	+{}% magicka
+{}% protection chance	{}% protection chance
++{:g} m reach	+{:g} m reach
++{} s blessing	+{} s blessing
+{}% a second	{}% a second
+{} reach	{} reach
++{} reach	+{} reach
+light stagger	light stagger
+firm stagger	firm stagger
+heavy stagger	heavy stagger
+-{}% resists	-{}% resists
+{}x as often	{}x as often
++{} levels	+{} levels
+{}x damage	{}x damage
+{}x  Â·  {}% bleed	{}x  Â·  {}% bleed
++{} s bleed	+{} s bleed
+{} arrows, {} s	{} arrows, {} s
+{} arrows	{} arrows
+Steel arrows	Steel arrows
+Elven arrows	Elven arrows
+Ebony arrows	Ebony arrows
+{}% elemental chance	{}% elemental chance
++{}% stamina recovery	+{}% stamina recovery
++{} arrows	+{} arrows
+{}x magicka	{}x magicka
+{} damage/s Â· {} reach	{} damage/s Â· {} reach
++{}% reach	+{}% reach
++{} s	+{} s
+{}  Â·  {} reach	{}  Â·  {} reach
+{} s  Â·  +{}%  Â·  ward	{} s  Â·  +{}%  Â·  ward
+-{}% damage, {} s	-{}% damage, {} s
+{}% absorbed	{}% absorbed
+back up	back up
+a second tremor	a second tremor
+knocked down	knocked down
++{:.1f} s frozen	+{:.1f} s frozen
++10% speed	+10% speed
+Flame Cloak	Flame Cloak
+second burst: {}%	second burst: {}%
+Challenges every enemy in reach. Those it holds turn on them for {} s.	Challenges every enemy in reach. Those it holds turn on them for {} s.
+Each taunt braces them with +{} armor for as long as it holds.	Each taunt braces them with +{} armor for as long as it holds.
+Enemies a taunt holds deal {}% less damage.	Enemies a taunt holds deal {}% less damage.
+For {:.0f} s, they and enemies who strike them deal {}% less weapon and spell damage. Enemy weakness lasts {:.0f} s after striking; the strongest Weak Will applies. The spectral helmet fades into lingering wisps.	For {:.0f} s, they and enemies who strike them deal {}% less weapon and spell damage. Enemy weakness lasts {:.0f} s after striking; the strongest Weak Will applies. The spectral helmet fades into lingering wisps.
+Weak Will remains active for {} s longer.	Weak Will remains active for {} s longer.
+Enemies struck by Weak Will remain weakened for 4 s longer after their last attack.	Enemies struck by Weak Will remain weakened for 4 s longer after their last attack.
+Slows movement and weapon attacks of enemies within {:.0f} of the tank by {}% for {:.0f} s. Repeated casts refresh the slow instead of stacking it.	Slows movement and weapon attacks of enemies within {:.0f} of the tank by {}% for {:.0f} s. Repeated casts refresh the slow instead of stacking it.
+Chaos Down reaches {} further around the tank.	Chaos Down reaches {} further around the tank.
+Chaos Down slows enemies for {} s longer.	Chaos Down slows enemies for {} s longer.
+When a living ally within {:.0f} falls below 25% health in combat, become their guardian for {:.0f} s. Absorbs {}% of nearby party damage after their defenses. Only one Last Bastion can protect the party at a time; absorbed damage can down or kill the tank.	When a living ally within {:.0f} falls below 25% health in combat, become their guardian for {:.0f} s. Absorbs {}% of nearby party damage after their defenses. Only one Last Bastion can protect the party at a time; absorbed damage can down or kill the tank.
+Last Bastion protects allies {} further away.	Last Bastion protects allies {} further away.
+Last Bastion lasts {} s longer.	Last Bastion lasts {} s longer.
++{} armor while they fight.	+{} armor while they fight.
+They bash {}x as often and raise the shield sooner.	They bash {}x as often and raise the shield sooner.
+Once a fight, falling below a quarter of their health, they recover {}% of it and gain +{:.0f} armor for {:.0f} s.	Once a fight, falling below a quarter of their health, they recover {}% of it and gain +{:.0f} armor for {:.0f} s.
+Raises a circle of healing light on the ground where it helps most, for {:.0f} s: you, the companions and their summons in it heal {}% of their health a second, the undead in it burn for 1/1.5/2% a second by rank (a boss half), and hurt companions walk into it. Spends magicka when activated.	Raises a circle of healing light on the ground where it helps most, for {:.0f} s: you, the companions and their summons in it heal {}% of their health a second, the undead in it burn for 1/1.5/2% a second by rank (a boss half), and hurt companions walk into it. Spends magicka when activated.
+In the circle, stamina comes back {}% of its most a second too.	In the circle, stamina comes back {}% of its most a second too.
+The circle reaches {} further.	The circle reaches {} further.
+Restores {:g}% of maximum magicka each second (up to {:.0f}) while inside the circle for {} s. Overlapping circles do not stack.	Restores {:g}% of maximum magicka each second (up to {:.0f}) while inside the circle for {} s. Overlapping circles do not stack.
+Rejuvenate restores {}% magicka at once to nearby allies, up to 30. Allies already in a circle do not receive another burst.	Rejuvenate restores {}% magicka at once to nearby allies, up to 30. Allies already in a circle do not receive another burst.
+Inside Rejuvenate, restores {:.1f}% maximum stamina per second too, up to 6.	Inside Rejuvenate, restores {:.1f}% maximum stamina per second too, up to 6.
+A spectral Wispmother blesses you and companions within {:g} m for {:g} s. Each hostile hit has a {}% chance to deal no damage. Blessings do not stack.	A spectral Wispmother blesses you and companions within {:g} m for {:g} s. Each hostile hit has a {}% chance to deal no damage. Blessings do not stack.
+Azura's Moon reaches {:g} m farther.	Azura's Moon reaches {:g} m farther.
+Azura's blessing lasts {} s longer.	Azura's blessing lasts {} s longer.
+Whoever is warded is also wrapped in Flame Cloak for {:.0f} s.	Whoever is warded is also wrapped in Flame Cloak for {:.0f} s.
+Everyone within reach regains {}% of their health every second for {:.0f} s.	Everyone within reach regains {}% of their health every second for {:.0f} s.
+Renewal lasts {} s longer.	Renewal lasts {} s longer.
+Anyone down within reach when Renewal starts gets straight back up with a third of their health.	Anyone down within reach when Renewal starts gets straight back up with a third of their health.
+The healing circle and Renewal give {}% more to anyone below a third of their health.	The healing circle and Renewal give {}% more to anyone below a third of their health.
+Their own magicka comes back {}% faster while they fight.	Their own magicka comes back {}% faster while they fight.
+Once a fight, when your health falls below {:.0f}%, they heal you for {}% of it at once, wherever they are.	Once a fight, when your health falls below {:.0f}%, they heal you for {}% of it at once, wherever they are.
+A roar that staggers every enemy within {} {}.	A roar that staggers every enemy within {} {}.
+The roar gives allies within {:.0f} back {}% of their stamina.	The roar gives allies within {:.0f} back {}% of their stamina.
+Enemies it staggers deal {}% less damage for {:.0f} s.	Enemies it staggers deal {}% less damage for {:.0f} s.
+{:.0f} s of fury: {}% more damage, and a power attack at every chance.	{:.0f} s of fury: {}% more damage, and a power attack at every chance.
+Each kill while berserk heals {}% of their health and adds 3 s.	Each kill while berserk heals {}% of their health and adds 3 s.
++{} armor while berserk.	+{} armor while berserk.
+A blow that breaks their target's guard: {} less armor for {:.0f} s, so everyone hits it harder.	A blow that breaks their target's guard: {} less armor for {:.0f} s, so everyone hits it harder.
+The blow also staggers them {}.	The blow also staggers them {}.
+Sunder also strips {}% of its resistance to magic, fire, frost and shock.	Sunder also strips {}% of its resistance to magic, fire, frost and shock.
+Slams the ground and rocks burst out of it: every enemy within {} falls and takes {}x their weapon's damage, and stays down a while.	Slams the ground and rocks burst out of it: every enemy within {} falls and takes {}x their weapon's damage, and stays down a while.
+Those light enough are thrown into the air.	Those light enough are thrown into the air.
+A second tremor 1.5 s later staggers everyone still standing.	A second tremor 1.5 s later staggers everyone still standing.
+Earthshaker reaches {} further.	Earthshaker reaches {} further.
+They power attack {}x as often.	They power attack {}x as often.
+Each kill heals {}% of their health.	Each kill heals {}% of their health.
+{}% more damage against enemies below {:.0f}% health.	{}% more damage against enemies below {:.0f}% health.
+Knocks the weapon out of their opponent's hands, up to {} levels above their own.	Knocks the weapon out of their opponent's hands, up to {} levels above their own.
+A disarmed enemy has {} less armor for {:.0f} s.	A disarmed enemy has {} less armor for {:.0f} s.
+Disarm also sweeps them off their feet.	Disarm also sweeps them off their feet.
+Catches their breath mid-fight: {}% of their health and {}% of their stamina back.	Catches their breath mid-fight: {}% of their health and {}% of their stamina back.
++{} armor for {:.0f} s after.	+{} armor for {:.0f} s after.
+Second Wind is ready {} s sooner.	Second Wind is ready {} s sooner.
+Guard the next melee blow for up to {} s. Counter and push the attacker down for {} s, dealing {}x weapon base damage on landing.	Guard the next melee blow for up to {} s. Counter and push the attacker down for {} s, dealing {}x weapon base damage on landing.
+The counter strike also deals {}x weapon base damage before the knockback.	The counter strike also deals {}x weapon base damage before the knockback.
+The first blow they turn aside also disarms the attacker, if the weapon can be taken.	The first blow they turn aside also disarms the attacker, if the weapon can be taken.
+Only while they stand before their target: a giant spectral wolf's head takes shape in front of it, jaws open round it, and bites down. Whatever its jaws close on takes {}x their weapon's damage, is held frozen mid-stagger in a ghostly smoke for {:.1f} s, and bleeds {}% of its health over {:.0f} s (a boss half as long and half as much).	Only while they stand before their target: a giant spectral wolf's head takes shape in front of it, jaws open round it, and bites down. Whatever its jaws close on takes {}x their weapon's damage, is held frozen mid-stagger in a ghostly smoke for {:.1f} s, and bleeds {}% of its health over {:.0f} s (a boss half as long and half as much).
+The wolf's bite holds whoever it catches frozen {:.1f} s longer.	The wolf's bite holds whoever it catches frozen {:.1f} s longer.
+The wolf's wounds bleed {} s longer, as fast as ever.	The wolf's wounds bleed {} s longer, as fast as ever.
+They work round to their opponent's side, and deal {}% more damage.	They work round to their opponent's side, and deal {}% more damage.
+Stamina comes back {}% faster while they fight.	Stamina comes back {}% faster while they fight.
+{}% more damage against an opponent who is staggered or disarmed.	{}% more damage against an opponent who is staggered or disarmed.
+Looses {} arrows in quick succession at their target; every archer and mage turns on it for {} s.	Looses {} arrows in quick succession at their target; every archer and mage turns on it for {} s.
+You and the party deal {}% more weapon damage while a volley lasts.	You and the party deal {}% more weapon damage while a volley lasts.
+The volley's target has {} less armor while it lasts.	The volley's target has {} less armor while it lasts.
+Primes the next bow shot for 12 s. The arrow explodes wherever it lands, dealing up to {} magic damage and staggering enemies within {:.1f} m. Damage falls with distance and magic resistance.	Primes the next bow shot for 12 s. The arrow explodes wherever it lands, dealing up to {} magic damage and staggering enemies within {:.1f} m. Damage falls with distance and magic resistance.
+The explosion reaches {} m farther.	The explosion reaches {} m farther.
+Explosive Arrow deals {}% more explosion damage.	Explosive Arrow deals {}% more explosion damage.
+Retreats up to {:.1f} m. A spectral archer distracts enemies attacking them for {:.0f} s, then fades. Moves 30% faster for {} s and takes {:.0f}% less damage. Rank III ends with a nearby stagger gust.	Retreats up to {:.1f} m. A spectral archer distracts enemies attacking them for {:.0f} s, then fades. Moves 30% faster for {} s and takes {:.0f}% less damage. Rank III ends with a nearby stagger gust.
+Windstep movement speed and protection last {} s longer.	Windstep movement speed and protection last {} s longer.
+Windstep grants 40% movement speed instead of 30%.	Windstep grants 40% movement speed instead of 30%.
+A portal fires {} fast arrows ahead over {:.1f} s, covering enemies within {:.0f} of the target. Near misses graze for half damage. No ammunition is consumed.	A portal fires {} fast arrows ahead over {:.1f} s, covering enemies within {:.0f} of the target. Near misses graze for half damage. No ammunition is consumed.
+{} more arrows fall.	{} more arrows fall.
+Every enemy under the rain staggers.	Every enemy under the rain staggers.
+Stamina recovers {}% faster in combat, helping them keep shooting and repositioning.	Stamina recovers {}% faster in combat, helping them keep shooting and repositioning.
+Provides unlimited {} for their bow. Better arrows you give them are kept.	Provides unlimited {} for their bow. Better arrows you give them are kept.
+steel arrows	steel arrows
+elven arrows	elven arrows
+ebony arrows	ebony arrows
+Arrows have a {}% chance to carry fire, frost or lightning in flight. An unblocked hit deals 8 extra damage of that element, reduced by resistance.	Arrows have a {}% chance to carry fire, frost or lightning in flight. An unblocked hit deals 8 extra damage of that element, reduced by resistance.
+{:.0f} s of arcane surge: their magicka flows back {}x as fast.	{:.0f} s of arcane surge: their magicka flows back {}x as fast.
+Arcane Surge also restores {}% of their magicka at once.	Arcane Surge also restores {}% of their magicka at once.
+While it lasts, your magicka and the party's flows back {}% faster too.	While it lasts, your magicka and the party's flows back {}% faster too.
+A spectral dragon opens its jaws and breathes their element for {} s, reaching {} and dealing {} damage per second to enemies inside the stream. Frost also drains stamina; lightning drains magicka. Rank III summons red Alduin.	A spectral dragon opens its jaws and breathes their element for {} s, reaching {} and dealing {} damage per second to enemies inside the stream. Frost also drains stamina; lightning drains magicka. Rank III summons red Alduin.
+Dragon's Breath reaches {}% farther, widening with its reach.	Dragon's Breath reaches {}% farther, widening with its reach.
+Dragon's Breath continues for {} additional seconds.	Dragon's Breath continues for {} additional seconds.
+A spark of their element flies to the target's feet and bursts in fire, frost or lightning, striking every enemy within {} for {} damage at the middle, falling off toward the edge.	A spark of their element flies to the target's feet and bursts in fire, frost or lightning, striking every enemy within {} for {} damage at the middle, falling off toward the edge.
+Grand: a giant fireball ringed by smaller explosions with sparks flying over it, a huge crystal of ice in the middle, or a second thunderbolt.	Grand: a giant fireball ringed by smaller explosions with sparks flying over it, a huge crystal of ice in the middle, or a second thunderbolt.
+After the hit, every enemy struck loses {}% of its fire, frost and shock resistance for {:.0f} s.	After the hit, every enemy struck loses {}% of its fire, frost and shock resistance for {:.0f} s.
+A second burst follows for {}% damage, at another enemy if one is near.	A second burst follows for {}% damage, at another enemy if one is near.
+The power of Magnus: for {} s their magicka never runs dry.	The power of Magnus: for {} s their magicka never runs dry.
+For {} s their magicka never runs dry, and their destruction spells strike {}% harder.	For {} s their magicka never runs dry, and their destruction spells strike {}% harder.
+For {} s their magicka never runs dry, their destruction spells strike {}% harder, and they resist magic by {}%.	For {} s their magicka never runs dry, their destruction spells strike {}% harder, and they resist magic by {}%.
+Magicka comes back {}% faster while they fight.	Magicka comes back {}% faster while they fight.
+Resists magic by {}%, and absorbs {}% of the spells cast at them.	Resists magic by {}%, and absorbs {}% of the spells cast at them.
+Whoever they fight loses {}% of its fire, frost and shock resistance while they do.	Whoever they fight loses {}% of its fire, frost and shock resistance while they do.

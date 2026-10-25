@@ -1,6 +1,12 @@
 # Third-party notices
 
-- CommonLibSSE-NG: extern/CommonLibSSE-NG, MIT licence, see its own LICENSE.
+- CommonLibSSE-NG 7.2.0: GPL-3.0-or-later with its Modding and Linking Exceptions.
+  The release includes the license and exceptions in `licenses/`, plus the legacy
+  MIT attribution for its original code. Matching source is supplied as a separate
+  source download, under `extern/CommonLibSSE-NG`; see `SOURCE-INFORMATION.txt`
+  in the Perk Tree Update package.
+- DirectXMath, DirectXTK, fmt, rapidcsv, spdlog, OpenVR and MinHook/hde64: their copyright and license
+  notices are included in `licenses/`.
 - SKSE Menu Framework API header: include/SKSEMenuFramework.h, as published for mod
   authors to use the framework. The framework itself is not bundled.
 - SmoothCam API, mwilsnd: include/SmoothCamAPI.h preserves the upstream invitation to
