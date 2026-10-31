@@ -1,3 +1,4 @@
+#include "FWM/Skald.h"
 // Path of the Companions: a perk tree for each follower role.
 //
 // Keeps every companion's perk points, ranks and carried abilities, and runs the abilities, the
@@ -12,6 +13,7 @@
 #include "FWM/Effects.h"
 #include "FWM/Forms.h"
 #include "FWM/Freeze.h"
+#include "FWM/Leveling.h"
 #include "FWM/Ripostes.h"
 #include "FWM/Host.h"
 #include "FWM/Log.h"
@@ -178,6 +180,7 @@ namespace
 		a_out.peak = a_record.peak;
 		a_out.earned = book.Earned(a_id);
 		a_out.flags = book.Unlimited(a_id) ? FightWithMePathsAPI::kUnlimitedFlag : 0;
+		if(a_record.skaldUnlocked)a_out.flags|=FightWithMePathsAPI::kSkaldUnlockedFlag;
 		a_out.spent = Paths::Spent(a_record);
 	}
 
@@ -214,13 +217,23 @@ namespace
 			if (a_role >= Paths::kRoles) {
 				return static_cast<int>(Paths::Block::kBadNode);
 			}
-			const std::scoped_lock guard(storeLock);
+			std::unique_lock guard(storeLock);
 			const auto*            record = Find(a_actor, true);
 			if (!record) {
 				return static_cast<int>(Paths::Block::kBadNode);
 			}
 			const auto role = static_cast<Role>(a_role);
 			if(role==Role::kBruiser && !FWM::Game::ArsenalOf(RE::TESForm::LookupByID<RE::Actor>(a_actor)).twoHanded) return static_cast<int>(Paths::Block::kBadNode);
+            if(role==Role::kSkald && !FWM::Skald::HasLute(RE::TESForm::LookupByID<RE::Actor>(a_actor)))return static_cast<int>(Paths::Block::kNoLute);
+            if(role==Role::kSkald && a_node==Paths::kNodes) {
+                const auto block=book.UnlockSkald(a_actor);
+                if(block==Paths::Block::kNone)Log("{} unlocks Skald ({}).",NameOf(a_actor),book.Unlimited(a_actor)?"temporary Debug Mode unlock":"10 earned skill points");
+                // Role selection can buy through the other DLL. Refresh this DLL's
+                // cached gate before a quick role assignment can see the old lock.
+                guard.unlock();
+                (void)FWM::PathsLink::ReadNow(a_actor);
+                return static_cast<int>(block);
+            }
 			const auto block = book.Learn(a_actor, role, a_node);
 			if (block == Paths::Block::kNone) {
 				Log("{} learns {} (rank {}, {} of {} point(s) spent).", NameOf(a_actor), NodeName(role, a_node), record->ranks[a_role][a_node],
@@ -565,6 +578,7 @@ namespace
 			FWM::Camera::RequestSmoothCam();
 			FWM::Freeze::Install();
             FWM::Ripostes::Install();
+            FWM::Skald::Install();
 			FWM::Battle::InstallEvents();
 			FWM::Menu::RegisterPaths({ ReadRules, WriteRules });
 			break;
@@ -578,6 +592,17 @@ namespace
 	}
 }
 
+// Local snapshots only: shared look resolution and broadcasting live in Settings.
+extern "C" FIGHTWITHMEPATHS_API int FightWithMePaths_GetTheme()
+{
+    return FWM::Settings::Get().uiTheme;
+}
+
+extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_SetTheme(int theme)
+{
+    return FWM::Settings::ApplyTheme(theme);
+}
+
 extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_IsWindstepDecoy(std::uint32_t actor)
 {
     return FWM::WindstepDecoys::Is(actor);
@@ -587,6 +612,31 @@ extern "C" FIGHTWITHMEPATHS_API std::uint32_t FightWithMePaths_GetLoadoutMask(st
 {
     return role < static_cast<std::uint32_t>(FWM::Role::kCount) ?
         FWM::LoadoutPolicy::RoleWeapons(static_cast<FWM::Role>(role)) : 0;
+}
+
+extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_GetLevel(std::uint32_t a_actor, FightWithMePathsAPI::Level* a_out)
+{
+	const auto progress = a_out ? FWM::Leveling::Find(a_actor) : std::nullopt;
+	if (!progress) {
+		return false;
+	}
+	*a_out = { progress->level, progress->xp, progress->next, progress->sinceLevelUp, progress->capped };
+	return true;
+}
+
+extern "C" FIGHTWITHMEPATHS_API std::uint32_t FightWithMePaths_GetStatuses(std::uint32_t actor, std::uint32_t size, FightWithMePathsAPI::Status* out, std::uint32_t capacity)
+{
+    if(!out || size!=sizeof(FightWithMePathsAPI::Status) || !capacity)return 0;
+    const auto statuses=FWM::Battle::ActiveStatuses(actor);
+    const auto count=std::min(capacity,static_cast<std::uint32_t>(statuses.size()));
+    for(std::uint32_t i=0;i<count;++i){
+        const auto& row=statuses[i];auto& wire=out[i];wire={};
+        std::snprintf(wire.name,sizeof(wire.name),"%s",row.name.c_str());
+        std::snprintf(wire.detail,sizeof(wire.detail),"%s",row.detail.c_str());
+        wire.glyph=row.glyph;wire.tint=static_cast<std::uint32_t>(row.tint);
+        wire.left=row.left;wire.length=row.length;wire.progress=row.progress;
+    }
+    return count;
 }
 
 extern "C" FIGHTWITHMEPATHS_API FightWithMePathsAPI::IPaths* FightWithMePaths_GetInterface(std::uint32_t a_version)
@@ -636,3 +686,7 @@ EXTERN_C [[maybe_unused]] __declspec(dllexport) bool SKSEAPI SKSEPlugin_Query(co
 	a_info->version = SKSEPlugin_Version.pluginVersion;
 	return true;
 }
+
+extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_IsPerforming(std::uint32_t actor) { return FWM::Skald::Performing(actor); }
+extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_IsSkaldRelocating(std::uint32_t actor) { return FWM::Skald::Relocating(actor); }
+extern "C" FIGHTWITHMEPATHS_API bool FightWithMePaths_CanTavernLute(std::uint32_t actor) { return FWM::Skald::CanTavernLute(actor); }

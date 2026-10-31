@@ -54,6 +54,11 @@ Magnus	Magnus
 When magicka is low against a nearby boss or several enemies.	When magicka is low against a nearby boss or several enemies.
 Dragon's Breath	Dragon's Breath
 Against a durable enemy or nearby cluster in front, with room for the stream.	Against a durable enemy or nearby cluster in front, with room for the stream.
+Ljodh of Fervor	Ljodh of Fervor
+When nearby allies can benefit and there is room to perform.	When nearby allies can benefit and there is room to perform.
+Ljodh of Echoes	Ljodh of Echoes
+Ljodh of the Hollow	Ljodh of the Hollow
+Ljodh of Glory	Ljodh of Glory
 Expose	Expose
 Sweep	Sweep
 Resolve	Resolve
@@ -118,6 +123,17 @@ Lingering Breath	Lingering Breath
 Arcane Flow	Arcane Flow
 Spell Shield	Spell Shield
 Unravel	Unravel
+Spellweave	Spellweave
+Relentless Rhythm	Relentless Rhythm
+Encore	Encore
+Inspired Casting	Inspired Casting
+Leadfoot Verse	Leadfoot Verse
+Broken Concentration	Broken Concentration
+Keen Chorus	Keen Chorus
+Victorious Verse	Victorious Verse
+Spectral Aegis	Spectral Aegis
+Lingering Verse	Lingering Verse
+Gift of the Old Tongue	Gift of the Old Tongue
 Path of the Blade	Path of the Blade
 Steel and nerve: take their weapons, turn their blows, loose the wolf spirit.	Steel and nerve: take their weapons, turn their blows, loose the wolf spirit.
 Path of the Shield	Path of the Shield
@@ -130,6 +146,8 @@ Path of the Arrow	Path of the Arrow
 Death from range: volleys, explosive arrows, windsteps and a rain of arrows.	Death from range: volleys, explosive arrows, windsteps and a rain of arrows.
 Path of the Storm	Path of the Storm
 Spell pressure: surging magicka, wards, elemental bursts, and at its height, Magnus.	Spell pressure: surging magicka, wards, elemental bursts, and at its height, Magnus.
+Path of the Skald	Path of the Skald
+A spectral lute and four Ljodhs: quicken allies, restore abilities, weaken enemies and inspire critical strikes.	A spectral lute and four Ljodhs: quicken allies, restore abilities, weaken enemies and inspire critical strikes.
 
 # src/Paths.cpp
 Novice	Novice
@@ -138,6 +156,8 @@ Adept	Adept
 Expert	Expert
 Requires {} Rank {}	Requires {} Rank {}
 Requires level {}	Requires level {}
+Unlock Skald with a lute and 10 skill points first.	Unlock Skald with a lute and 10 skill points first.
+Requires a lute in this companion inventory.	Requires a lute in this companion inventory.
 Maximum rank reached	Maximum rank reached
 Not enough perk points	Not enough perk points
 Follower level too low	Follower level too low
@@ -150,6 +170,21 @@ Invalid perk	Invalid perk
 Requires all other perks unlocked	Requires all other perks unlocked
 Requires all perks at maximum rank	Requires all perks at maximum rank
 Maximum path bonus reached	Maximum path bonus reached
++{}% attack speed	+{}% attack speed
+-{}% casting wind-up	-{}% casting wind-up
+-{}% power-attack cost	-{}% power-attack cost
++{}% cooldown recovery	+{}% cooldown recovery
+-{} s cooldown	-{} s cooldown
+-{}% ability cost	-{}% ability cost
+-{}% enemy damage	-{}% enemy damage
+-{}% movement	-{}% movement
+-{}% max magicka	-{}% max magicka
++{} pp critical damage	+{} pp critical damage
++{} pp critical chance	+{} pp critical chance
+{}% resource restored	{}% resource restored
+{}% health as shield	{}% health as shield
++{}% linger duration	+{}% linger duration
+{}% double-effect chance	{}% double-effect chance
 +{} armor	+{} armor
 {} damage	{} damage
 +{} m	+{} m
@@ -178,7 +213,7 @@ heavy stagger	heavy stagger
 {}x as often	{}x as often
 +{} levels	+{} levels
 {}x damage	{}x damage
-{}x  Â·  {}% bleed	{}x  Â·  {}% bleed
+{}x  |  {}% bleed	{}x  |  {}% bleed
 +{} s bleed	+{} s bleed
 {} arrows, {} s	{} arrows, {} s
 {} arrows	{} arrows
@@ -189,11 +224,11 @@ Ebony arrows	Ebony arrows
 +{}% stamina recovery	+{}% stamina recovery
 +{} arrows	+{} arrows
 {}x magicka	{}x magicka
-{} damage/s Â· {} reach	{} damage/s Â· {} reach
+{} damage/s | {} reach	{} damage/s | {} reach
 +{}% reach	+{}% reach
 +{} s	+{} s
-{}  Â·  {} reach	{}  Â·  {} reach
-{} s  Â·  +{}%  Â·  ward	{} s  Â·  +{}%  Â·  ward
+{}  |  {} reach	{}  |  {} reach
+{} s  |  +{}%  |  ward	{} s  |  +{}%  |  ward
 -{}% damage, {} s	-{}% damage, {} s
 {}% absorbed	{}% absorbed
 back up	back up
@@ -203,6 +238,21 @@ knocked down	knocked down
 +10% speed	+10% speed
 Flame Cloak	Flame Cloak
 second burst: {}%	second burst: {}%
+Ground waves grant {0}% attack speed. At 3 / 5 / 10 wave hits: 1x / 1.5x / 2x strength. Lasts 8 seconds; waves refresh it.	Ground waves grant {0}% attack speed. At 3 / 5 / 10 wave hits: 1x / 1.5x / 2x strength. Lasts 8 seconds; waves refresh it.
+Ground waves grant {0}% faster companion ability cooldown recovery, or shout recovery for the player. Excludes Ljodhs. At 3 / 5 / 10 hits: 1x / 1.5x / 2x strength. Lasts 8 seconds; waves refresh it.	Ground waves grant {0}% faster companion ability cooldown recovery, or shout recovery for the player. Excludes Ljodhs. At 3 / 5 / 10 hits: 1x / 1.5x / 2x strength. Lasts 8 seconds; waves refresh it.
+Ground waves weaken enemy damage by {0}%. At 3 / 5 / 10 hits: 1x / 1.5x / 2x strength. Lasts 8 seconds; waves refresh it. Finale: one stagger.	Ground waves weaken enemy damage by {0}%. At 3 / 5 / 10 hits: 1x / 1.5x / 2x strength. Lasts 8 seconds; waves refresh it. Finale: one stagger.
+Ground waves grant +{0} pp critical damage and 5% critical chance. At 3 / 5 / 10 hits: 1x / 1.5x / 2x strength. Lasts 10 seconds; waves refresh it.	Ground waves grant +{0} pp critical damage and 5% critical chance. At 3 / 5 / 10 hits: 1x / 1.5x / 2x strength. Lasts 10 seconds; waves refresh it.
+Shortens spell wind-up by {0}%, scaled by earned Fervor stacks. Concentration damage is unchanged.	Shortens spell wind-up by {0}%, scaled by earned Fervor stacks. Concentration damage is unchanged.
+Power attacks cost {0}% less stamina, scaled by earned Fervor stacks. Cost reduction cannot exceed 100%.	Power attacks cost {0}% less stamina, scaled by earned Fervor stacks. Cost reduction cannot exceed 100%.
+The final chord removes {0} seconds from non-Ljodh cooldowns, or the player's shout cooldown, scaled by earned Echoes stacks.	The final chord removes {0} seconds from non-Ljodh cooldowns, or the player's shout cooldown, scaled by earned Echoes stacks.
+Your next non-Ljodh ability costs {0}% less, scaled by Echoes stacks. For the player, refunds that share of the next charged fire-and-forget spell. One use per performance; later waves do not refill it. Maximum reduction: 100%.	Your next non-Ljodh ability costs {0}% less, scaled by Echoes stacks. For the player, refunds that share of the next charged fire-and-forget spell. One use per performance; later waves do not refill it. Maximum reduction: 100%.
+Hollow slows enemies by {0}%, scaled by their earned wave stacks.	Hollow slows enemies by {0}%, scaled by their earned wave stacks.
+The finale drains {0}% of enemy maximum magicka, scaled by their earned Hollow stacks.	The finale drains {0}% of enemy maximum magicka, scaled by their earned Hollow stacks.
+Glory adds {0} percentage points of critical chance, scaled by earned wave stacks.	Glory adds {0} percentage points of critical chance, scaled by earned wave stacks.
+Critical hits restore {0}% maximum stamina or magicka, scaled by Glory stacks. At most once per second.	Critical hits restore {0}% maximum stamina or magicka, scaled by Glory stacks. At most once per second.
+While performing, a personal shield absorbs damage equal to {0}% of maximum health.	While performing, a personal shield absorbs damage equal to {0}% of maximum health.
+Earned Ljodh stacks last {0}% longer. Waves and a successful finale refresh their duration.	Earned Ljodh stacks last {0}% longer. Waves and a successful finale refresh their duration.
+Each newly earned stack has its own {0}% chance to double its contribution. Rolls are independent for each recipient; earlier results are retained.	Each newly earned stack has its own {0}% chance to double its contribution. Rolls are independent for each recipient; earlier results are retained.
 Challenges every enemy in reach. Those it holds turn on them for {} s.	Challenges every enemy in reach. Those it holds turn on them for {} s.
 Each taunt braces them with +{} armor for as long as it holds.	Each taunt braces them with +{} armor for as long as it holds.
 Enemies a taunt holds deal {}% less damage.	Enemies a taunt holds deal {}% less damage.

@@ -1,4 +1,4 @@
-# Path of the Companions 1.0
+# Path of the Companions 1.2
 
 A perk tree for each follower role. Every level a companion earns gives them a perk point to spend on their paths: new abilities, ranks in the ones they know, branches that add to them, and traits that are always on. They carry two abilities into a fight, and you choose which.
 
@@ -16,7 +16,7 @@ No ESP.
 - SKSE64 and Address Library for SKSE Plugins
 - SKSE Menu Framework 3, for the panel and the trees
 - **POTC Effects**, the art the abilities use (meshes and textures only; no plugin). Fight With Me users already have it.
-- Optional: Fight With Me 0.5.0, which provides battle orders and role-aware loadout pools. Update the two plugins together.
+- Optional: Fight With Me 0.6.0, which provides battle orders and role-aware loadout pools. Update the two plugins together: Paths 1.2 does not connect to older Fight With Me versions.
 
 Skyrim SE 1.5.97 and AE are both supported, like Fight With Me itself.
 
@@ -32,15 +32,26 @@ The optional matched-core bundle includes both DLLs; install the current base pa
 first so its default settings are current too. Effects **1.0.21 or newer** is required
 for the latest ability artwork. Paths includes its own follower-trait definitions.
 
+## The Skald (new in 1.2)
+
+A seventh path: a support bard who fights with a spectral lute. Give a companion a lute and
+spend 10 skill points to unlock it (free in Debug Mode). Between songs the Skald plays the
+**Single Note** on the move, a lute pulse that slows its target and stacks random discords on
+it, and keeps its distance like a mage. It stands still only for its four **Ljodhs**
+(Fervor, Echoes, the Hollow and Glory), interruptible songs whose waves strengthen allies or
+weaken enemies. Enemies prefer other targets over the Skald. Its lute recordings, meshes and
+class artwork ship in this download. See `docs/SKALD.md` for every number.
+
 ## Party damage balance
 
-Under **Settings > Party balance**, reduce follower damage as the active party grows.
-The defaults put four followers at 55% damage each against one enemy, 65% against
-two, and 85% against four or more. One follower deals full damage; the default
-minimum for larger parties is 50%. You can adjust the strength or switch it off.
-This covers normal weapon/spell damage (including other mods) and POTC abilities.
-Player damage and healing are unchanged. Direct scripted damage without an attacker
-may bypass it; existing spell effects retain their multiplier until they expire.
+Under **Settings > Party balance**, one **Follower damage** slider (0-100%, default 100%)
+scales all follower damage together, including a single follower and with automatic
+balance off. **Automatic party balance** also reduces follower damage as the active party
+grows: four followers deal 55% each against one enemy, 65% against two, and 85% against four
+or more, never below 50%, before the slider applies. This covers normal weapon/spell damage
+(including other mods) and POTC abilities. Player damage and healing are unchanged. Direct
+scripted damage without an attacker may bypass it; existing spell effects retain their
+multiplier until they expire. See `docs/PARTY-BALANCE.md`.
 
 ## Effect update
 
@@ -50,18 +61,18 @@ Breath, Azura's Moon and Last Bastion. Turn it off to restore their original siz
 Magic circles and Magnus keep their existing size.
 
 Dragon's Breath uses Skyrim's native Fire Breath shout effect, denser fire and frost,
-and stronger lightning. Base damage is 20 / 30 / 45 per second. Arrow Rain now fires
-24 / 36 / 48 fast arrows through a forward portal over 1.5 seconds; Downpour adds
-8 / 16 / 24 arrows. Update both the plugin and the Effects download.
+and stronger lightning. Base damage is 20 / 30 / 45 per second. Arrow Rain fires
+12 / 18 / 24 fast arrows through a forward portal over 1.5 seconds; Downpour adds
+4 / 8 / 12 arrows. Update both the plugin and the Effects download.
 
 ## How it works
 
 - **Points.** One for every level past 10: the first at level 11, forty at level 50. Every companion has their own, from the highest level they themselves have reached, so a companion who was with you before you installed this, or one you meet at level 30, already has every point their level earned. One companion's points are never another's.
-- **Paths.** Each role has its own: the Blade (Fighter), the Shield (Tank), the Mender (Healer), the Hammer (Bruiser), the Arrow (Archer) and the Storm (Mage). A companion can spend their points on any of their paths, but only the path of the role they are playing counts in a fight.
+- **Paths.** Each role has its own: the Blade (Fighter), the Shield (Tank), the Mender (Healer), the Hammer (Bruiser), the Arrow (Archer), the Storm (Mage) and the Path of the Skald (Skald, unlocked with a lute and 10 points). A companion can spend their points on any of their paths, but only the path of the role they are playing counts in a fight.
 - **Abilities.** Every path has four. None are unlocked by default. The first two can be purchased immediately. The third unlocks at follower level 35 and the fourth at level 50, independently of earlier purchases. Magnus also requires every other Mage perk to be unlocked (rank I).
 - **Ranks and branches.** Ability ranks I, II and III cost 1, 2 and 3 points respectively (6 total). Branch ranks cost 1 point each. Each ability has two branches that add something to it, each up to three ranks; a branch can never outrank its ability.
 - **Traits.** Three per path, costing 1 point per rank. Rank I is available to purchase immediately; rank II requires follower level 25 and rank III level 50. Debug Mode bypasses these gates. Learned traits are always on while they fight.
-- **Path bonus.** Every point spent on a path also makes a companion of that role 1% better at what the role is for, shown beside the path's name. Fighter: attack speed. Tank: less damage from every blow, arrow and harmful spell, 1% less per point (75% at most). Healer: all the healing they do, from abilities, the spells they cast and the potions they drink. Bruiser: weapon damage. Archer: stamina recovery in combat (+90% at most); arrows are unlimited before spending any points. Mage: magicka cost of every spell, 1% less per point (75% off at most). Only the path of the role they play now counts. The rate per point is set in `FightWithMePaths.ini`, `[PathBonus]`. Once every node of a path is mastered, leftover points can go straight into its bonus (the card's INTO THE BONUS button, or A on a pad), until the bonus is at its highest; the âˆ’ beside the bonus takes one back out, and starting the path over returns them all.
+- **Path bonus.** Every point spent on a path also makes a companion of that role 1% better at what the role is for, shown beside the path's name. Fighter: attack speed. Tank: less damage from every blow, arrow and harmful spell, 1% less per point (75% at most). Healer: all the healing they do, from abilities, the spells they cast and the potions they drink. Bruiser: weapon damage. Archer: stamina recovery in combat (+90% at most); arrows are unlimited before spending any points. Mage: magicka cost of every spell, 1% less per point (75% off at most). Only the path of the role they play now counts. The rate per point is set in `FightWithMePaths.ini`, `[PathBonus]`. Once every node of a path is mastered, leftover points can go straight into its bonus (the card's INTO THE BONUS button, or A on a pad), until the bonus is at its highest; the - beside the bonus takes one back out, and starting the path over returns them all.
 - **Two carried.** Each path carries two abilities into a fight. Swap them out of a fight; each has its own AUTO switch for using it unasked.
 - **Giving points back.** Right-click a node (or Y on a pad) to give back a rank, or start a whole path over, free, out of a fight. Can be switched off in the INI.
 
@@ -138,7 +149,7 @@ Paths has one page in the Mod Control Panel, **Path of the Companions > Settings
 The theme: **Oxblood** keeps the original red (the default), **Vanilla** uses charcoal, silver
 and pale starlight, and **Nordic** adds engraved stone frames and beveled metal emblems.
 Every theme keeps the existing tree layout, windows, navigation and controls. With Fight With
-Me, Paths follows its **Battle plan > Interface > Theme** choice; one choice updates both menus.
+Me, Paths follows its **Battle plan > Interface > Theme** choice. With Walk With Me installed, its wheel, actions and settings use the same theme. Changing any of the three selectors updates every installed companion mod. Update all three DLLs together.
 
 `SKSE/Plugins/FightWithMePaths.ini`, `[Points]`:
 
@@ -216,7 +227,7 @@ War Cry now uses a golden sabercat head at ranks I-II and a larger crimson saber
 
 Dragon's Breath's beam now travels level in front of the follower. Its diameter is 180/250/360 units before reach bonuses, with a short widening at the mouth and a broad, constant body. The head sits directly ahead with its animated open jaw just above the caster's ground plane; rank III Alduin is larger. Lightning strands re-form independently, and frost particles have radial transparency instead of hard sprite edges.
 
-Dragonï¿½s Breath streams use round textured geometry instead of crossed flat sheets. Rank III has a blue-hot fire core, dense pale frost with moving ice shards, or connected lightning bolts with occasional forks traced down onto terrain. These forks are visual accents; the existing continuous damage model remains unchanged.
+Dragon's Breath streams use round textured geometry instead of crossed flat sheets. Rank III has a blue-hot fire core, dense pale frost with moving ice shards, or connected lightning bolts with occasional forks traced down onto terrain. These forks are visual accents; the existing continuous damage model remains unchanged.
 
 
 ### Loadout pools and ability resources
@@ -249,7 +260,7 @@ Ability level gates: existing purchases below level 35/50 are refunded on load, 
 
 Azura's Moon replaces Healer Ward as the level-50 fourth ability. Renewal is second and Rejuvenate is the level-35 third ability. The blessing grants a 20/25/30% chance to negate hostile weapon damage or a newly applied harmful health spell, for 10/12/14 seconds, within 12/14/16 metres. Moon's Reach adds 2/4/6 metres; Lingering Grace adds 2/4/6 seconds. Cooldown: 90 seconds; normal ranked Magicka activation costs apply. Overlapping blessings retain the strongest chance and longest duration, without adding probabilities. Existing Ward purchases are refunded on load.
 
-The Wispmother rises in an authored praying pose. Ranks Iâ€“II are blue beneath a glowing moon; rank III is purple beneath the stock Azura's Star artifact. The outward pulse grants the blessing as it reaches each ally. A following ethereal aura remains for the actual blessing duration and fades during its final second. Effects and sounds can be disabled without disabling protection. Damage is intercepted before application; environmental damage and healing are not changed. Physical/enchantment components arriving within 50 ms share one roll. Damage from unrelated mods that directly writes health outside Skyrim's weapon/active-effect paths is not intercepted. Logs report recipients and prevented hit counts for playthrough verification.
+The Wispmother rises in an authored praying pose. Ranks I-II are blue beneath a glowing moon; rank III is purple beneath the stock Azura's Star artifact. The outward pulse grants the blessing as it reaches each ally. A following ethereal aura remains for the actual blessing duration and fades during its final second. Effects and sounds can be disabled without disabling protection. Damage is intercepted before application; environmental damage and healing are not changed. Physical/enchantment components arriving within 50 ms share one roll. Damage from unrelated mods that directly writes health outside Skyrim's weapon/active-effect paths is not intercepted. Logs report recipients and prevented hit counts for playthrough verification.
 
 ## Latest effects and split review (2026-10-24)
 
@@ -310,4 +321,4 @@ Preview: `http://127.0.0.1:8471/windstep.html?rank=3`, with a male/female select
 It uses the shipped geometry and animation; the solid stock archer shows retreat.
 Native collision, movement, stagger, damage reduction and actual enemy acquisition still require an in-game playtest. Target samples are logged under `[Windstep]`; see `tools/windstep/README.md` for the validation checklist.
 
-Theme changes made under **Path of the Companions > Settings > Panel > Theme** also update Fight With Me when both are installed. Without Fight With Me, the theme is saved in `FightWithMePaths_user.ini`.
+Theme changes made under **Path of the Companions > Settings > Panel > Theme** also update Fight With Me and Walk With Me when installed. Without Fight With Me, the theme is saved in `FightWithMePaths_user.ini`.

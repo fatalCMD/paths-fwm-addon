@@ -20,7 +20,9 @@
 #>
 [CmdletBinding()]
 param(
-	[string]$Version = '1.0.0',
+	[string]$Version = '1.2.0',
+	# The Fight With Me release built and tested with this one; names the source download.
+	[string]$CoreVersion = '0.6.0',
 	[string]$VcpkgRoot = $env:VCPKG_ROOT,
 	[string]$CMake = '',
 	[string]$SourceArchive = '',
@@ -154,6 +156,8 @@ New-Item -ItemType Directory -Force -Path $fontDir | Out-Null
 Get-ChildItem -LiteralPath (Join-Path $repoRoot 'assets\fonts') -Recurse -File | ForEach-Object {
 	Copy-Item -LiteralPath $_.FullName -Destination $fontDir -Force
 }
+# Skald is part of Paths, including its lute recordings and new artwork.
+& (Join-Path $repoRoot 'tools\skald\StageAssets.ps1') -Destination $releaseRoot
 "Required download: POTC Effects 1.0.21 or newer (ability assets and the 18 class backdrops; no plugin)." |
 	Set-Content -LiteralPath (Join-Path $releaseRoot 'Required-Effects.txt') -Encoding UTF8
 if ($IncludeCoreUIUpdate) {
@@ -203,7 +207,7 @@ foreach ($dependency in 'directxmath', 'directxtk', 'fmt', 'rapidcsv', 'spdlog')
 }
 
 if (-not $IncludeCoreUIUpdate) {
-    "Matching plugin source: FightWithMe-0.5.0-Paths-1.0.0-Source.zip (separate developer download; not required to play). See BUILD-SOURCE.md inside that archive." |
+    "Matching plugin source: FightWithMe-$CoreVersion-Paths-$Version-Source.zip (separate developer download; not required to play). See BUILD-SOURCE.md inside that archive." |
         Set-Content -LiteralPath (Join-Path $releaseRoot 'SOURCE-INFORMATION.txt') -Encoding UTF8
 }
 # Forward slashes, one entry at a time, as in BuildPackage.ps1.
